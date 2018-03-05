@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        div {
+            width: 300px;
+            height: 300px;
+            margin: 200px auto;
+            background-color: #ccc;
+            text-align: center;
+        }
+
+        div>input {
+            margin-top: 100px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <input type="text" name="IC" id="IC" maxlength="14" onkeyup="ICVAalidation(event)">
+    </div>
+
+    <script type="text/javascript">
+
+        function ICVAalidation(event) {
+
+            var ctrl = event.currentTarget;
+
+            var e = event || window.event;
+
+            // 获取光标
+            
+            if (e && e.keyCode == 8) {
+                var CaretPos = 0; 
+                //  Firefox support
+             if (ctrl.selectionStart || ctrl.selectionStart == '0')
+                 CaretPos = ctrl.selectionStart;
+            }
+            var val = event.currentTarget.value.replace(/-/g, "");
+            if (val.length < 6) {
+                return;
+            }
+            if (val.length == 6) {
+                event.currentTarget.value = val + '-';
+            }
+            if (val.length > 6 && val.length < 9) {
+                console.log(val); // 12345612
+                // 截取第一部分
+                var res1 = val.substr(0, 6);
+                // 截取第二部分
+                var res2 = val.substr(6, 2);
+                if (val.length == 7) {
+                    event.currentTarget.value = res1 + '-' + res2;
+                }
+                if (val.length == 8) {
+                    event.currentTarget.value = res1 + '-' + res2 + '-';
+                }
+            }
+            if (val.length >= 9 && val.length < 13) {
+                // 截取第一部分
+                var res1 = val.substr(0, 6);
+                // 截取第二部分
+                var res2 = val.substr(6, 2);
+                //console.log(res2);
+                // 截取第三部分
+                var res3 = val.substr(8, 4);
+                event.currentTarget.value = res1 + '-' + res2 + '-' + res3;
+
+                // 在value全部输入完成之后，按下删除键时设置光标停留在被删除的元素的位置
+                if (e && e.keyCode == 8) {
+                    var pos = CaretPos;
+                    if (ctrl.setSelectionRange) {
+                        ctrl.focus();
+                        ctrl.setSelectionRange(pos, pos);
+                    }
+                    else if (ctrl.createTextRange) {
+                        var range = ctrl.createTextRange();
+                        range.collapse(true);
+                        range.moveEnd('character', pos);
+                        range.moveStart('character', pos);
+                        range.select();
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
