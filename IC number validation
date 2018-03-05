@@ -1,0 +1,51 @@
+
+
+// 失去焦点的函数，判断ic-number 并且将年龄和判断性别绑定在日期上。
+
+ICvalidate(event,beans){
+
+  // IC number 的长度为14的限制，如果小于14 则清空
+  if (event.target.value.length < 14) {
+                this.standarPopup.showAlert("Tips", "Invalid New IC No.");
+                beans.IDNUMBER.setValue("");
+                return;
+            }
+            // 项目中已封装好的获取当前日期的格式  yyyymmdd 格式
+            let sys = this.datePipe.transform(new Date().toString(), 'yyyyMMdd');
+            
+            let icDOB = event.target.value.split("-")[0];
+            let testVal = "20" + icDOB;
+            // 正则匹配日期
+            let reg = /((^((1[8-9]\d{2})|([2-9]\d{3}))([-\/\._])(10|12|0?[13578])([-\/\._])(3[01]|[12][0-9]|0?[1-9])$)|(^((1[8-9]\d{2})|([2-9]\d{3}))([-\/\._])(11|0?[469])([-\/\._])(30|[12][0-9]|0?[1-9])$)|(^((1[8-9]\d{2})|([2-9]\d{3}))([-\/\._])(0?2)([-\/\._])(2[0-8]|1[0-9]|0?[1-9])$)|(^([2468][048]00)([-\/\._])(0?2)([-\/\._])(29)$)|(^([3579][26]00)([-\/\._])(0?2)([-\/\._])(29)$)|(^([1][89][0][48])([-\/\._])(0?2)([-\/\._])(29)$)|(^([2-9][0-9][0][48])([-\/\._])(0?2)([-\/\._])(29)$)|(^([1][89][2468][048])([-\/\._])(0?2)([-\/\._])(29)$)|(^([2-9][0-9][2468][048])([-\/\._])(0?2)([-\/\._])(29)$)|(^([1][89][13579][26])([-\/\._])(0?2)([-\/\._])(29)$)|(^([2-9][0-9][13579][26])([-\/\._])(0?2)([-\/\._])(29)$))/
+            // 将输入的字符串转化为数字
+            if (Number(testVal) > Number(sys)) {
+                testVal = "19" + icDOB;
+            }
+            
+            // 将已经比较好的日期格式截取成为三份并拼接成为yyyy-mm-dd格式和前面定义的正则比较
+            let testDob = testVal.substr(0, 4) + "-" + testVal.substr(4, 2) + "-" + testVal.substr(6, 2)
+            if (!(reg.test(testDob))) {
+            // 格式不正确，提示信息，并清空内容
+                this.standarPopup.showAlert("Tips", "Invalid New IC No.");
+                beans.IDNUMBER.setValue("");
+                return;
+            }
+            
+            let newDOB = testVal.substr(4, 2) + "/" + testVal.substr(6, 2) + "/" + testVal.substr(0, 4);
+            beans.DOB.setValue(newDOB);
+            // 年龄绑定在IC number当中的对应位置
+            beans.AGE.setValue(UtilsProvider.GetAge(testDob, sys));
+    
+            // 判断ic-number最后一为是技奇数是为male，偶数为female 
+            let lastNumber = Number(event.target.value.substr(13, 1));
+            //  1213456-12-1234
+    
+            if (lastNumber % 2 == 0) {
+    
+                beans.GENDER.setValue("0")
+            } else {
+                beans.GENDER.setValue("1")
+            }
+            // idNumber.setValue("0");
+
+}
