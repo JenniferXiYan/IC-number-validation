@@ -31,6 +31,9 @@ ICvalidate(event,beans){
                 return;
             }
             
+            
+            // 在此截取拼接的原因是为了让日期格式为和获取的当前内容匹配，日期格式为mm/dd/yyyy 的形式，
+            // 所以需要将输入的内容重新调整，需要让选择的日期和自己输入的内容相一致
             let newDOB = testVal.substr(4, 2) + "/" + testVal.substr(6, 2) + "/" + testVal.substr(0, 4);
             beans.DOB.setValue(newDOB);
             // 年龄绑定在IC number当中的对应位置
